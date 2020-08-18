@@ -47,6 +47,7 @@ public class Ware extends JavaPlugin {
 					ChatColor.YELLOW + selected.getDescription(), 20, 80, 20);
 		}
 		// Wait before starting the game
+		// TODO: Make this actually use my custom tasks
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 
 			@Override
@@ -54,7 +55,7 @@ public class Ware extends JavaPlugin {
 				triggerRandomGame();
 			}
 			
-		}, ); // Enough time for the title to show
+		}, 0, 0); // Enough time for the title to show
 		selected.performGameAction();
 		
 		// TODO: Make this a repeating task that counts down until the next game
