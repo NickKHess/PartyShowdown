@@ -4,32 +4,24 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class LimitedBukkitRunnable extends BukkitRunnable {
 
-	protected int time = 0;
-	int length;
+	private int time = 0;
+	int stopAt = 20 + 80 + 20;
 	
 	/***
 	 * @param length - The length of time before the timer stops
 	 */
 	public LimitedBukkitRunnable(int length) {
-		this.length = length;
+		
 	}
 
 	@Override
 	public void run() {
-		if(time < length) {
+		if(time < stopAt) {
+			
 			time++;
 		}
-		else {
-			this.cancel();
-		}
 	}
 	
-	public int getTime() {
-		return time;
-	}
-	
-	public void setTime(int time) {
-		this.time = time;
-	}
+	pu
 
 }

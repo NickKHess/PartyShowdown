@@ -1,4 +1,4 @@
-package com.csg.ware.game.archive;
+package com.csg.ware.game.games;
 
 import java.util.Collections;
 import java.util.List;
