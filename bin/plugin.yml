@@ -4,7 +4,7 @@ version: 1.0
 description: Minigames in survival
 author: CoinSlotGaming
 prefix: Ware
-depend:
+depend: [ActionbarAPI, MultiVerse]
 softdepend:
 loadbefore:
 commands:

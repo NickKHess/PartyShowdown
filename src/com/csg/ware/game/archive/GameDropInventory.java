@@ -1,4 +1,4 @@
-package com.csg.ware.game.games;
+package com.csg.ware.game.archive;
 
 import java.util.List;
 import java.util.Random;
