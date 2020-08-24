@@ -5,6 +5,7 @@ import com.csg.ware.tasks.templates.LimitedBukkitRunnable;
 public class TriggerRandomGame extends LimitedBukkitRunnable {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	//BossBar bar = Bukkit.getServer().createBossBar(this.time + " seconds left in " + GameMaster.getCurrentGame(), this.color, this.style, this.flag);
     //bar.setVisible(true);
     //bar.setProgress(this.progress);
@@ -30,5 +31,8 @@ public class TriggerRandomGame extends LimitedBukkitRunnable {
 =======
 	
 >>>>>>> parent of 0ea6496... Minor updates
+=======
+	
+>>>>>>> 4ed8a936230415dd4244bfb2b407e83947c54033
 	
 }

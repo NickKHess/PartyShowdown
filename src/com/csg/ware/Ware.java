@@ -2,8 +2,11 @@ package com.csg.ware;
 
 import java.util.Random;
 <<<<<<< HEAD
+<<<<<<< HEAD
 import java.util.UUID;
 =======
+=======
+>>>>>>> 4ed8a936230415dd4244bfb2b407e83947c54033
 
 import org.bukkit.Bukkit;
 >>>>>>> parent of 0ea6496... Minor updates
@@ -52,8 +55,11 @@ public class Ware extends JavaPlugin {
 		}
 		// Wait before starting the game
 <<<<<<< HEAD
+<<<<<<< HEAD
 		new TriggerRandomGame().runTaskTimer(plugin, 0, 1);
 =======
+=======
+>>>>>>> 4ed8a936230415dd4244bfb2b407e83947c54033
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 
 			@Override
@@ -74,7 +80,10 @@ public class Ware extends JavaPlugin {
 			}
 			
 		}, 1*60*20); // 2 minutes
+<<<<<<< HEAD
 >>>>>>> parent of 0ea6496... Minor updates
+=======
+>>>>>>> 4ed8a936230415dd4244bfb2b407e83947c54033
 	}
 	
 }
