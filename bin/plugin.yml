@@ -1,12 +1,10 @@
 main: com.csg.ware.Ware
 name: Ware
 version: 1.0
-description: Minigames in survival
+description: Mini minigames
 author: CoinSlotGaming
 prefix: Ware
-depend:
-softdepend:
-loadbefore:
+depend: [CoinSlotUtils]
 commands:
   ware:
    description: The MineWare core command

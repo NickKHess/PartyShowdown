@@ -1,37 +1,30 @@
 package com.csg.ware;
 
-import java.util.Random;
-<<<<<<< HEAD
-<<<<<<< HEAD
-import java.util.UUID;
-=======
-=======
->>>>>>> 4ed8a936230415dd4244bfb2b407e83947c54033
-
 import org.bukkit.Bukkit;
->>>>>>> parent of 0ea6496... Minor updates
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import com.csg.ware.commands.CommandWare;
-import com.csg.ware.game.Game;
-import com.csg.ware.game.games.GameDropInventory;
-import com.csg.ware.game.games.GameRandomTeleport;
+import com.csg.ware.entities.GameDirector;
+import com.csg.ware.rounds.generic.Round;
+import com.csg.ware.rounds.rounds.RoundSnowballing;
 
-public class Ware extends JavaPlugin {
+public final class Ware extends JavaPlugin {
 	
 	private static Ware plugin = null;
-	public boolean started = false;
-
+	private GameDirector director = null;
+	
 	@Override
 	public void onEnable() {
 		plugin = this;
+		director = new GameDirector();
 
+		// Register general events
+		Bukkit.getServer().getPluginManager().registerEvents(new GeneralEventManager(plugin), plugin);
+		
+		// Register commands
 		plugin.getCommand("ware").setExecutor(new CommandWare());
 		
-		Game.games.add(new GameRandomTeleport());
-		Game.games.add(new GameDropInventory());
+		// Register games
+		Round.games.add(new RoundSnowballing());
 	}
 
 	@Override
@@ -42,48 +35,13 @@ public class Ware extends JavaPlugin {
 	public static Ware getPlugin() {
 		return plugin;
 	}
-	
-	public static void triggerRandomGame() {
-		Random r = new Random();
-		int i = r.nextInt(Game.games.size());
-		Game selected = Game.games.get(i);
-		
-		// Send each player the game information
-		for(Player player : plugin.getServer().getOnlinePlayers()) {
-			player.sendTitle(ChatColor.GREEN + "" + ChatColor.BOLD + selected.getName(), 
-					ChatColor.YELLOW + selected.getDescription(), 20, 80, 20);
-		}
-		// Wait before starting the game
-<<<<<<< HEAD
-<<<<<<< HEAD
-		new TriggerRandomGame().runTaskTimer(plugin, 0, 1);
-=======
-=======
->>>>>>> 4ed8a936230415dd4244bfb2b407e83947c54033
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 
-			@Override
-			public void run() {
-				triggerRandomGame();
-			}
-			
-		}, ); // Enough time for the title to show
-		selected.performGameAction();
-		
-		// TODO: Make this a repeating task that counts down until the next game
-		// After 5 minutes, trigger another random game
-		Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-
-			@Override
-			public void run() {
-				triggerRandomGame();
-			}
-			
-		}, 1*60*20); // 2 minutes
-<<<<<<< HEAD
->>>>>>> parent of 0ea6496... Minor updates
-=======
->>>>>>> 4ed8a936230415dd4244bfb2b407e83947c54033
+	public GameDirector getDirector() {
+		return director;
 	}
-	
+
+	public void setDirector(GameDirector director) {
+		this.director = director;
+	}
+
 }
