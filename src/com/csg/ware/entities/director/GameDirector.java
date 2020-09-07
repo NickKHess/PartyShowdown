@@ -1,4 +1,4 @@
-package com.csg.ware.entities;
+package com.csg.ware.entities.director;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,19 +8,31 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import com.csg.ware.Ware;
+import com.csg.ware.entities.GamePlayer;
 import com.csg.ware.rounds.generic.Round;
 
 public final class GameDirector {
 
 	private List<GamePlayer> players = new ArrayList<>();
-	private Round currentGame;
+	private Round currentRound;
 	private int minPlayers;
+	private int desiredPlayers;
 	private int maxPlayers;
 
 	private static GameDirector instance;
 
-	private int phase = 0;
+	public enum Phase {
+		NONE, PREGAME, COUNTDOWN, INGAME, POSTGAME
+	}
+	
+	/**
+	 * <i>phase</i>
+	 * The current phase of the game
+	 */
+	private Phase phase = Phase.NONE;
 	private int round = 0;
+
+	private CountdownRunnable countdown;
 
 	/**
 	 * <i>GameDirector</i>
@@ -28,10 +40,10 @@ public final class GameDirector {
 	 * The class that contains all logic and information for running
 	 * minigames in real time
 	 */
-	public GameDirector() {
+	public GameDirector(int minPlayers, int desiredPlayers, int maxPlayers) {
 		instance = this;
 	}
-
+	
 	/**
 	 * <i>startRandomGame</i>
 	 * <br>
@@ -40,20 +52,53 @@ public final class GameDirector {
 	 * @returns game - The selected game
 	 */
 	public Round startRandomGame() {
+		// Populate players first because reasons
+		populatePlayers();
+
 		Random r = new Random();
-		int i = r.nextInt(Round.games.size());
-		Round game = Round.games.get(i);
+		int i = r.nextInt(Round.availableRounds.size());
+		Round round = Round.availableRounds.get(i);
 
 		// Send each player the game information
 		for(GamePlayer gPlayer : players) {
 			Player player = Bukkit.getPlayer(gPlayer.getUUID());
-			player.sendTitle(ChatColor.GREEN + "" + ChatColor.BOLD + game.getName(), 
-					ChatColor.YELLOW + game.getDescription(), 10, 80, 10);
+			player.sendTitle(ChatColor.GREEN + "" + ChatColor.BOLD + round.getName(), 
+					ChatColor.YELLOW + round.getDescription(), 10, 80, 10);
 		}
 
-		game.runTaskTimer(Ware.getPlugin(), 0, 1);
-		currentGame = game;
-		return game;
+		currentRound = round;
+		currentRound.runTaskTimer(Ware.getPlugin(), 0, 1);
+		return currentRound;
+	}
+
+	/**
+	 * <i>stop</i>
+	 * <br>
+	 * Stops the game
+	 */
+	public void stop() {
+		for(GamePlayer player : players)
+			player.toPlayer().sendMessage(ChatColor.YELLOW + "The game has been" + ChatColor.RED + " STOPPED " + ChatColor.YELLOW + "by an admin or moderator.");
+		players.clear();
+
+		// Refresh the round instance from the list
+		Round.availableRounds.remove(currentRound);
+		try {
+			Round.availableRounds.add(currentRound.getClass().newInstance());
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+
+		currentRound.cancel();
+		currentRound = null;
+		phase = Phase.NONE;
+		round = 0;
+		instance = new GameDirector(minPlayers,desiredPlayers, maxPlayers);
+	}
+
+	public void startCountdown(int start) {
+		setCountdown(new CountdownRunnable(this, start));
 	}
 
 	public List<GamePlayer> getPlayers() {
@@ -72,7 +117,7 @@ public final class GameDirector {
 		for(GamePlayer gPlayer : players)
 			if(gPlayer.getUUID().equals(uuid))
 				found = true;
-		
+
 		if(!found)
 			players.add(new GamePlayer(uuid));
 	}
@@ -90,12 +135,18 @@ public final class GameDirector {
 				players.remove(gPlayer);
 	}
 
+	public void populatePlayers() {
+		players.clear();
+		for(Player gamePlayer : Bukkit.getOnlinePlayers())
+			addPlayer(gamePlayer.getUniqueId());		
+	}
+
 	public Round getCurrentGame() {
-		return currentGame;
+		return currentRound;
 	}
 
 	public void setCurrentGame(Round currentGame) {
-		this.currentGame = currentGame;
+		this.currentRound = currentGame;
 	}
 
 	public static GameDirector instance() {
@@ -110,6 +161,14 @@ public final class GameDirector {
 		this.minPlayers = minPlayers;
 	}
 
+	public int getDesiredPlayers() {
+		return desiredPlayers;
+	}
+	
+	public void setDesiredPlayers(int desiredPlayers) {
+		this.desiredPlayers = desiredPlayers;
+	}
+
 	public int getMaxPlayers() {
 		return maxPlayers;
 	}
@@ -118,20 +177,28 @@ public final class GameDirector {
 		this.maxPlayers = maxPlayers;
 	}
 
-	public int getPhase() {
+	public Phase getPhase() {
 		return phase;
 	}
 
-	public void setPhase(int phase) {
+	public void setPhase(Phase phase) {
 		this.phase = phase;
 	}
-
+	
 	public int getRound() {
 		return round;
 	}
 
 	public void setRound(int round) {
 		this.round = round;
+	}
+
+	public CountdownRunnable getCountdown() {
+		return countdown;
+	}
+
+	public void setCountdown(CountdownRunnable countdown) {
+		this.countdown = countdown;
 	}
 
 }

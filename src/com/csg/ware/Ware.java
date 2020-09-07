@@ -3,7 +3,7 @@ package com.csg.ware;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.csg.ware.commands.CommandWare;
-import com.csg.ware.entities.GameDirector;
+import com.csg.ware.entities.director.GameDirector;
 import com.csg.ware.rounds.generic.Round;
 import com.csg.ware.rounds.rounds.RoundSnowballing;
 
@@ -15,21 +15,21 @@ public final class Ware extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		plugin = this;
-		director = new GameDirector();
-
+		director = new GameDirector(8, 12, 16);
+		
 		// Register general events
 		Bukkit.getServer().getPluginManager().registerEvents(new GeneralEventManager(plugin), plugin);
-		
+
 		// Register commands
 		plugin.getCommand("ware").setExecutor(new CommandWare());
 		
 		// Register games
-		Round.games.add(new RoundSnowballing());
+		Round.availableRounds.add(new RoundSnowballing());
 	}
 
 	@Override
 	public void onDisable() {
-
+		// Nothing yet
 	}
 
 	public static Ware getPlugin() {

@@ -1,6 +1,8 @@
 package com.csg.ware.entities;
 
 import java.util.UUID;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 public final class GamePlayer {
 
@@ -21,6 +23,10 @@ public final class GamePlayer {
 		score = 0;
 	}
 	
+	public Player toPlayer() {
+		return Bukkit.getPlayer(uuid);
+	}
+	
 	public UUID getUUID() {
 		return uuid;
 	}
@@ -28,6 +34,7 @@ public final class GamePlayer {
 	public void setUUID(UUID uuid) {
 		this.uuid = uuid;
 	}
+	
 
 	public int getScore() {
 		return score;

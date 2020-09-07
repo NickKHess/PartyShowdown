@@ -9,28 +9,30 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import com.csg.utils.tasks.TimedBukkitRunnable;
 import com.csg.ware.Ware;
-import com.csg.ware.entities.GameDirector;
 import com.csg.ware.entities.GamePlayer;
-import com.csg.ware.tasks.LimitedBukkitRunnable;
+import com.csg.ware.entities.director.GameDirector;
+import com.csg.ware.entities.director.GameDirector.Phase;
 
-public abstract class Round extends LimitedBukkitRunnable {
+public abstract class Round extends TimedBukkitRunnable {
 
-	public static List<Round> games = new ArrayList<Round>();
+	public static List<Round> availableRounds = new ArrayList<>();
 
-	private String name = "Game";
-	private String description = "Just implement a game 4Head";
+	private String name = "Round";
+	private String description = "Just implement a round 4Head";
 
 	/**
 	 * <i>phase</i>
-	 * The current phase of the game
-	 * 
-	 * 0 = None
-	 * 1 = Pregame
-	 * 2 = Game
-	 * 3 = Postgame
+	 * <br>
+	 * The current phase of the round
 	 */
-	private int phase = 0;
+	private Phase phase = Phase.NONE;
+	/**
+	 * <i>gameLength</i>
+	 * <br>
+	 * The length of the game in seconds
+	 */
 	private int gameLength = 300;
 	private BossBar bossBar = Bukkit.createBossBar(ChatColor.LIGHT_PURPLE + "There are " + ChatColor.AQUA + ((int) (time / 20)) + ChatColor.LIGHT_PURPLE + " seconds left in the game!", BarColor.YELLOW, BarStyle.SOLID);
 
@@ -59,48 +61,14 @@ public abstract class Round extends LimitedBukkitRunnable {
 	public void run() {
 		GameDirector director = GameDirector.instance();
 		switch(phase) {
-		case 1:
-			// Pregame
-			int currentTimeLimit = 300 * 20;
-			while(time < currentTimeLimit) {
-				// Game is full
-				if(director.getPlayers().size() == director.getMaxPlayers())
-					currentTimeLimit = 10 * 20;
-				// Game is filled enough to play, but not quite yet
-				else if(director.getPlayers().size() > director.getMinPlayers() && time < 240)
-					currentTimeLimit = 60 * 20;
+		case NONE:
+			break;
+		case PREGAME:
+			for(GamePlayer gamePlayer : director.getPlayers()) {
 
-				ChatColor color = ChatColor.AQUA;
-
-				int timeLeft = (currentTimeLimit - time) / 20;
-				switch(timeLeft) {
-				case 10:
-				case 9:
-				case 8:
-				case 7:
-				case 6:
-					color = ChatColor.GREEN;
-				case 5:
-				case 4:
-					color = ChatColor.YELLOW;
-				case 3:
-				case 2:
-					color = ChatColor.GOLD;
-				case 1:
-					color = ChatColor.RED;
-					for(GamePlayer gPlayer : director.getPlayers()) {
-						Bukkit.getPlayer(gPlayer.getUUID()).sendMessage(ChatColor.YELLOW + "The game will start in " + color + timeLeft + ChatColor.YELLOW + " seconds!");
-						// TODO: Add FeatherBoard Support
-					}
-					break;
-				}
 			}
-			if(time == 15 * 20) {
-				time = 0;
-				phase = 1;
-			}
-		case 2:
-			// Start and end game
+			break;
+		case INGAME:
 			if(time == 0) {
 				// Register events for the game
 				Bukkit.getServer().getPluginManager().registerEvents(listener, Ware.getPlugin());
@@ -122,12 +90,15 @@ public abstract class Round extends LimitedBukkitRunnable {
 				bossBar.removeAll();
 
 				time = 0;
-				phase = 2;
+				phase = Phase.POSTGAME;
 			}
-		case 3:
-			// Postgame
+			break;
+		case POSTGAME:
 			postGame();
 			// TODO: Leaderboard and scores
+			break;
+		default:
+			break;
 		}
 
 	}
@@ -161,11 +132,11 @@ public abstract class Round extends LimitedBukkitRunnable {
 		this.gameLength = gameLength;
 	}
 
-	public int getPhase() {
+	public Phase getPhase() {
 		return phase;
 	}
 
-	public void setPhase(int phase) {
+	public void setPhase(Phase phase) {
 		this.phase = phase;
 	}
 

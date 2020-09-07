@@ -4,6 +4,7 @@ version: 1.0
 description: Mini minigames
 author: CoinSlotGaming
 prefix: Ware
+api-version: 1.16
 depend: [CoinSlotUtils]
 commands:
   ware:

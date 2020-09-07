@@ -4,15 +4,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import com.csg.ware.entities.GameDirector;
+import com.csg.utils.items.ItemStackBuilder;
 import com.csg.ware.entities.GamePlayer;
+import com.csg.ware.entities.director.GameDirector;
 import com.csg.ware.events.RoundSnowballingEventManager;
 import com.csg.ware.rounds.generic.Round;
 
 public final class RoundSnowballing extends Round {
 
-	ItemStackBuilder shovel = new ItemStackBuilder();
-	
+	ItemStack shovel;
 	ItemStack snowball16 = new ItemStack(Material.SNOWBALL, 16);
 	ItemStack snowball = new ItemStack(Material.SNOWBALL);
 
@@ -20,6 +20,8 @@ public final class RoundSnowballing extends Round {
 
 	public RoundSnowballing() {
 		super("Snowballing", "Eliminate other players using snowballs!", 300, new RoundSnowballingEventManager());
+		
+		shovel = new ItemStackBuilder(Material.NETHERITE_SHOVEL).setName("Pog Shovel").build();
 	}
 
 	@Override
@@ -29,7 +31,7 @@ public final class RoundSnowballing extends Round {
 			Player player = Bukkit.getPlayer(gPlayer.getUUID());
 			for(int slot : snowballSlots)
 				player.getInventory().setItem(slot, snowball16);
-			player.getInventory().setItem(8, arg1);
+			player.getInventory().setItem(8, shovel);
 		}
 	}
 	
