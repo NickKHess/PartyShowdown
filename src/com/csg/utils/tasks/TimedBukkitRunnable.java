@@ -28,24 +28,34 @@ public class TimedBukkitRunnable extends BukkitRunnable {
 	 * @param limit - The limit of time for which the runnable will run
 	 */
 	public TimedBukkitRunnable(int limit, boolean countDown) {
-		this.time = limit;
-		this.limit = 0;
+		if(countDown) {
+			this.time = limit;
+			this.limit = 0;
+		}
+		else {
+			this.time = 0;
+			this.limit = limit;
+		}
 		this.countDown = countDown;
 	}
 
 	@Override
 	public void run() {
-		if(!countDown) {
-			if(time < limit)
-				time++;
-			else
-				this.cancel();
-		}
-		else {
+		if(countDown) {
 			if(time > limit)
 				time--;
-			else
+			else {
 				this.cancel();
+				return;
+			}
+		}
+		else {
+			if(time < limit)
+				time++;
+			else {
+				this.cancel();
+				return;
+			}
 		}
 	}
 

@@ -5,10 +5,10 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import com.csg.utils.items.ItemStackBuilder;
+import com.csg.utils.player.PlayerCollisionToggler;
 import com.csg.ware.entities.GamePlayer;
 import com.csg.ware.entities.director.GameDirector;
 import com.csg.ware.events.RoundSnowballingEventManager;
-import com.csg.ware.rounds.generic.Round;
 
 public final class RoundSnowballing extends Round {
 
@@ -26,9 +26,14 @@ public final class RoundSnowballing extends Round {
 
 	@Override
 	public void startGame() {
-		// All players in the session will receive snowballs
 		for(GamePlayer gPlayer : GameDirector.instance().getPlayers()) {
 			Player player = Bukkit.getPlayer(gPlayer.getUUID());
+			
+			// Re-enable collision for all players
+			PlayerCollisionToggler toggler = new PlayerCollisionToggler();
+			toggler.removePlayer(player);
+			
+			// All players in the session will receive snowballs
 			for(int slot : snowballSlots)
 				player.getInventory().setItem(slot, snowball16);
 			player.getInventory().setItem(8, shovel);

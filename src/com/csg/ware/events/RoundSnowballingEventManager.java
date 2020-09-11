@@ -1,6 +1,5 @@
 package com.csg.ware.events;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
@@ -29,7 +28,6 @@ public class RoundSnowballingEventManager implements Listener {
 				Player shooter = (Player) snowball.getShooter();
 				Player hit = (Player) e.getHitEntity();
 
-				Bukkit.broadcastMessage("");
 			}
 	}
 

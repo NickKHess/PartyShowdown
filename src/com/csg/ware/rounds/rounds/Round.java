@@ -1,4 +1,4 @@
-package com.csg.ware.rounds.generic;
+package com.csg.ware.rounds.rounds;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,14 +59,14 @@ public abstract class Round extends TimedBukkitRunnable {
 
 	@Override
 	public void run() {
+		// ALWAYS CALL SUPER
+		super.run();
+		
 		GameDirector director = GameDirector.instance();
 		switch(phase) {
 		case NONE:
-			break;
 		case PREGAME:
-			for(GamePlayer gamePlayer : director.getPlayers()) {
-
-			}
+			// Pregame handled in GameDirector.startRandomRound();
 			break;
 		case INGAME:
 			if(time == 0) {

@@ -4,7 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.csg.ware.commands.CommandWare;
 import com.csg.ware.entities.director.GameDirector;
-import com.csg.ware.rounds.generic.Round;
+import com.csg.ware.entities.director.GeneralEventManager;
+import com.csg.ware.rounds.rounds.Round;
 import com.csg.ware.rounds.rounds.RoundSnowballing;
 
 public final class Ware extends JavaPlugin {

@@ -10,6 +10,4 @@ public class SignToPosition {
 		this.sign = sign;
 	}
 	
-	
-	
 }

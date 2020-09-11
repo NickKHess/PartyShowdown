@@ -6,10 +6,12 @@ import java.util.Random;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import com.csg.utils.player.PlayerCollisionToggler;
 import com.csg.ware.Ware;
 import com.csg.ware.entities.GamePlayer;
-import com.csg.ware.rounds.generic.Round;
+import com.csg.ware.rounds.rounds.Round;
 
 public final class GameDirector {
 
@@ -24,12 +26,12 @@ public final class GameDirector {
 	public enum Phase {
 		NONE, PREGAME, COUNTDOWN, INGAME, POSTGAME
 	}
-	
+
 	/**
 	 * <i>phase</i>
 	 * The current phase of the game
 	 */
-	private Phase phase = Phase.NONE;
+	private Phase phase = Phase.PREGAME;
 	private int round = 0;
 
 	private CountdownRunnable countdown;
@@ -41,64 +43,67 @@ public final class GameDirector {
 	 * minigames in real time
 	 */
 	public GameDirector(int minPlayers, int desiredPlayers, int maxPlayers) {
+		this.minPlayers = minPlayers;
+		this.desiredPlayers = desiredPlayers;
+		this.maxPlayers = maxPlayers;
+
 		instance = this;
 	}
-	
-	/**
-	 * <i>startRandomGame</i>
-	 * <br>
-	 * Selects a random {@link Round}, displays the game information to each player,
-	 * then starts the game.
-	 * @returns game - The selected game
-	 */
-	public Round startRandomGame() {
-		// Populate players first because reasons
-		populatePlayers();
 
-		Random r = new Random();
-		int i = r.nextInt(Round.availableRounds.size());
+	/**
+	 * <i>startRandomRound</i>
+	 * <br>
+	 * Selects a random {@link Round}, displays the round information to each player,
+	 * then starts the round.
+	 */
+	public void startRandomRound() {
+		phase = Phase.INGAME; // Set the GAME phase to ingame
+
+		int i = new Random().nextInt(Round.availableRounds.size());
 		Round round = Round.availableRounds.get(i);
 
-		// Send each player the game information
-		for(GamePlayer gPlayer : players) {
-			Player player = Bukkit.getPlayer(gPlayer.getUUID());
-			player.sendTitle(ChatColor.GREEN + "" + ChatColor.BOLD + round.getName(), 
-					ChatColor.YELLOW + round.getDescription(), 10, 80, 10);
+		try {
+			currentRound = round.getClass().newInstance();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
 		}
 
-		currentRound = round;
-		currentRound.runTaskTimer(Ware.getPlugin(), 0, 1);
-		return currentRound;
+		currentRound.setPhase(Phase.PREGAME); // Set the ROUND phase to pregame
+		// Show game description + overview of level
+		for(GamePlayer gPlayer : players) {
+			Player player = gPlayer.toPlayer();
+
+			player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, .5f);
+			player.sendTitle(ChatColor.GREEN + "" + ChatColor.BOLD + currentRound.getName(), 
+					ChatColor.YELLOW + currentRound.getDescription(), 10, 80, 10);
+			// TODO: Add overview
+		}
+
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Ware.getPlugin(), new Runnable() {
+			@Override
+			public void run() {
+				currentRound.setPhase(Phase.INGAME); // Set the ROUND phase to pregame
+				currentRound.runTaskTimer(Ware.getPlugin(), 0, 1);
+			}
+		}, 10 + 80 + 10);
 	}
 
 	/**
 	 * <i>stop</i>
 	 * <br>
-	 * Stops the game
+	 * Stops the current {@link Round}
 	 */
 	public void stop() {
 		for(GamePlayer player : players)
 			player.toPlayer().sendMessage(ChatColor.YELLOW + "The game has been" + ChatColor.RED + " STOPPED " + ChatColor.YELLOW + "by an admin or moderator.");
 		players.clear();
 
-		// Refresh the round instance from the list
-		Round.availableRounds.remove(currentRound);
-		try {
-			Round.availableRounds.add(currentRound.getClass().newInstance());
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
-
 		currentRound.cancel();
 		currentRound = null;
 		phase = Phase.NONE;
 		round = 0;
-		instance = new GameDirector(minPlayers,desiredPlayers, maxPlayers);
-	}
-
-	public void startCountdown(int start) {
-		setCountdown(new CountdownRunnable(this, start));
+		instance = new GameDirector(minPlayers, desiredPlayers, maxPlayers);
 	}
 
 	public List<GamePlayer> getPlayers() {
@@ -118,8 +123,11 @@ public final class GameDirector {
 			if(gPlayer.getUUID().equals(uuid))
 				found = true;
 
-		if(!found)
+		if(!found) {
 			players.add(new GamePlayer(uuid));
+			PlayerCollisionToggler toggler = new PlayerCollisionToggler();
+			toggler.addPlayer(Bukkit.getPlayer(uuid));
+		}
 	}
 
 	/**
@@ -139,6 +147,18 @@ public final class GameDirector {
 		players.clear();
 		for(Player gamePlayer : Bukkit.getOnlinePlayers())
 			addPlayer(gamePlayer.getUniqueId());		
+	}
+
+	/**
+	 * <i>startCountdown</i>
+	 * <br>
+	 * Starts a new CountdownRunnable
+	 * @param start - the time, in seconds, to run the countdown for
+	 */
+	public void startCountdown(int start) {
+		phase = Phase.COUNTDOWN;
+		countdown = new CountdownRunnable(this, start*20 + 1);
+		countdown.runTaskTimer(Ware.getPlugin(), 0, 1);
 	}
 
 	public Round getCurrentGame() {
@@ -164,7 +184,7 @@ public final class GameDirector {
 	public int getDesiredPlayers() {
 		return desiredPlayers;
 	}
-	
+
 	public void setDesiredPlayers(int desiredPlayers) {
 		this.desiredPlayers = desiredPlayers;
 	}
@@ -184,7 +204,7 @@ public final class GameDirector {
 	public void setPhase(Phase phase) {
 		this.phase = phase;
 	}
-	
+
 	public int getRound() {
 		return round;
 	}

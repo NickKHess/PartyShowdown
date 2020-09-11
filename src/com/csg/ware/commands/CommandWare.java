@@ -17,24 +17,28 @@ public final class CommandWare implements CommandExecutor {
 		if(sender instanceof Player) {
 			Player player = (Player) sender;
 			if(args.length == 1) {
+				GameDirector director = GameDirector.instance();
 				if(args[0].equalsIgnoreCase("start")) {
-					if(GameDirector.instance().getPhase().equals(Phase.NONE))
-						if(GameDirector.instance().getCurrentGame() == null)
-							GameDirector.instance().startRandomGame();
+					if(director.getPhase().equals(Phase.NONE))
+						if(director.getCurrentGame() == null)
+							director.startRandomRound();
 				}
 				else if(args[0].equalsIgnoreCase("startcountdown")) {
-					if(GameDirector.instance().getCurrentGame() != null)
-						if(GameDirector.instance().getPhase().equals(Phase.PREGAME))
-							GameDirector.instance().setPhase(Phase.COUNTDOWN);
+					if(director.getCurrentGame() == null) {
+						if(director.getPhase().equals(Phase.PREGAME)) {
+							director.populatePlayers();
+							director.startCountdown(10);
+						}
+					}
 				}
 				else if(args[0].equalsIgnoreCase("stopcountdown")) {
-					if(GameDirector.instance().getCurrentGame() != null)
-						if(GameDirector.instance().getPhase().equals(Phase.COUNTDOWN))
-							GameDirector.instance().setPhase(Phase.PREGAME);
+					if(director.getCurrentGame() == null)
+						if(director.getPhase().equals(Phase.COUNTDOWN))
+							director.setPhase(Phase.PREGAME);
 				}
 				else if(args[0].equalsIgnoreCase("stop")) {
-					if(GameDirector.instance().getCurrentGame() != null)
-						GameDirector.instance().stop();
+					if(director.getCurrentGame() != null)
+						director.stop();
 					else
 						player.sendMessage(ChatColor.RED + "There is no game running!");
 				}

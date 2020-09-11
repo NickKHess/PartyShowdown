@@ -5,7 +5,7 @@ description: Mini minigames
 author: CoinSlotGaming
 prefix: Ware
 api-version: 1.16
-depend: [CoinSlotUtils]
+depend: []
 commands:
   ware:
    description: The MineWare core command
