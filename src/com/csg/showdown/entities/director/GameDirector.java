@@ -1,4 +1,4 @@
-package com.csg.ware.entities.director;
+package com.csg.showdown.entities.director;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,10 +8,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import com.csg.showdown.Showdown;
+import com.csg.showdown.entities.GamePlayer;
+import com.csg.showdown.rounds.rounds.Round;
 import com.csg.utils.player.PlayerCollisionToggler;
-import com.csg.ware.Ware;
-import com.csg.ware.entities.GamePlayer;
-import com.csg.ware.rounds.rounds.Round;
 
 public final class GameDirector {
 
@@ -34,7 +34,7 @@ public final class GameDirector {
 	private Phase phase = Phase.PREGAME;
 	private int round = 0;
 
-	private CountdownRunnable countdown;
+	private PregameRunnable countdown;
 
 	/**
 	 * <i>GameDirector</i>
@@ -60,10 +60,10 @@ public final class GameDirector {
 		phase = Phase.INGAME; // Set the GAME phase to ingame
 
 		int i = new Random().nextInt(Round.availableRounds.size());
-		Round round = Round.availableRounds.get(i);
-
+		Round selectedRound = Round.availableRounds.get(i);
+		
 		try {
-			currentRound = round.getClass().newInstance();
+			currentRound = selectedRound.getClass().newInstance();
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -80,11 +80,11 @@ public final class GameDirector {
 			// TODO: Add overview
 		}
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Ware.getPlugin(), new Runnable() {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Showdown.getPlugin(), new Runnable() {
 			@Override
 			public void run() {
 				currentRound.setPhase(Phase.INGAME); // Set the ROUND phase to pregame
-				currentRound.runTaskTimer(Ware.getPlugin(), 0, 1);
+				currentRound.runTaskTimer(Showdown.getPlugin(), 0, 1);
 			}
 		}, 10 + 80 + 10);
 	}
@@ -157,8 +157,8 @@ public final class GameDirector {
 	 */
 	public void startCountdown(int start) {
 		phase = Phase.COUNTDOWN;
-		countdown = new CountdownRunnable(this, start*20 + 1);
-		countdown.runTaskTimer(Ware.getPlugin(), 0, 1);
+		countdown = new PregameRunnable((start * 20) + 1);
+		countdown.runTaskTimer(Showdown.getPlugin(), 0, 1);
 	}
 
 	public Round getCurrentGame() {
@@ -213,11 +213,11 @@ public final class GameDirector {
 		this.round = round;
 	}
 
-	public CountdownRunnable getCountdown() {
+	public PregameRunnable getCountdown() {
 		return countdown;
 	}
 
-	public void setCountdown(CountdownRunnable countdown) {
+	public void setCountdown(PregameRunnable countdown) {
 		this.countdown = countdown;
 	}
 

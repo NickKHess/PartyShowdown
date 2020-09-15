@@ -1,14 +1,14 @@
-package com.csg.ware.rounds.rounds;
+package com.csg.showdown.rounds.rounds;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import com.csg.showdown.entities.GamePlayer;
+import com.csg.showdown.entities.director.GameDirector;
+import com.csg.showdown.events.RoundSnowballingEventManager;
 import com.csg.utils.items.ItemStackBuilder;
 import com.csg.utils.player.PlayerCollisionToggler;
-import com.csg.ware.entities.GamePlayer;
-import com.csg.ware.entities.director.GameDirector;
-import com.csg.ware.events.RoundSnowballingEventManager;
 
 public final class RoundSnowballing extends Round {
 
@@ -28,6 +28,8 @@ public final class RoundSnowballing extends Round {
 	public void startGame() {
 		for(GamePlayer gPlayer : GameDirector.instance().getPlayers()) {
 			Player player = Bukkit.getPlayer(gPlayer.getUUID());
+			
+			player.getInventory().clear();
 			
 			// Re-enable collision for all players
 			PlayerCollisionToggler toggler = new PlayerCollisionToggler();
@@ -53,7 +55,7 @@ public final class RoundSnowballing extends Round {
 
 	@Override
 	public void postGame() {
-		// TODO: Show leaderboards, show
+		// TODO: Show leaderboards, give coins
 	}
 
 }

@@ -1,6 +1,6 @@
-package com.csg.ware.entities.director;
+package com.csg.showdown.events;
 
-import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -8,8 +8,9 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import com.csg.ware.Ware;
-import com.csg.ware.entities.director.GameDirector.Phase;
+import com.csg.showdown.Showdown;
+import com.csg.showdown.entities.director.GameDirector;
+import com.csg.showdown.entities.director.GameDirector.Phase;
 
 // All events in this class should have HIGHEST priority
 // This will make sure they are called first, as they are the most important
@@ -20,10 +21,10 @@ public final class GeneralEventManager implements Listener {
 	final int TIME_DESIRED_PLAYERS = 30;
 	final int TIME_MAX_PLAYERS = 10;
 
-	Ware plugin = null;
+	Showdown plugin = null;
 	GameDirector director = null;
 
-	public GeneralEventManager(Ware plugin) {
+	public GeneralEventManager(Showdown plugin) {
 		this.plugin = plugin;
 		this.director = plugin.getDirector();
 
@@ -31,7 +32,7 @@ public final class GeneralEventManager implements Listener {
 	}
 
 	// GAME EVENTS
-	
+
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		int players = director.getPlayers().size();
@@ -44,7 +45,7 @@ public final class GeneralEventManager implements Listener {
 			if(director.getPlayers().size() < director.getMinPlayers()) {
 				director.setPhase(Phase.PREGAME);
 			}
-			
+
 			// If we reach desired players or max players, reconfigure the time
 			if(players == director.getDesiredPlayers() && director.getCountdown().getTime() > TIME_DESIRED_PLAYERS) {
 				director.getCountdown().setTime(TIME_DESIRED_PLAYERS);
@@ -89,21 +90,21 @@ public final class GeneralEventManager implements Listener {
 
 
 	}
-	
+
 	// GENERAL EVENTS
-	
+
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void onFoodLevelChange(FoodLevelChangeEvent e) {
 		// Check if restoring food level
 		if(e.getItem() == null)
 			e.setCancelled(true);
 	}
-	
+
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void onEntityDamage(EntityDamageEvent e) {
-		Bukkit.broadcastMessage("test");
-		if(director.getPhase().equals(Phase.PREGAME) || director.getPhase().equals(Phase.COUNTDOWN))
-			e.setCancelled(true);
+		if(e.getEntity() instanceof Player)
+			if(director.getPhase().equals(Phase.PREGAME) || director.getPhase().equals(Phase.COUNTDOWN))
+				e.setCancelled(true);
 	}
 
 }

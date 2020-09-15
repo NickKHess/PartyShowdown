@@ -5,6 +5,5 @@
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="lib" path="O:/Servers/Minecraft/1.16.2/Plugin Test/spigot.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Nick/Downloads/FeatherBoard.jar"/>
-	<classpathentry kind="lib" path="O:/Servers/Minecraft/1.16.2/CoinSlotArcade AWS/MineWare/plugins/CoinSlotUtils.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

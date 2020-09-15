@@ -6,10 +6,9 @@ public class TimedBukkitRunnable extends BukkitRunnable {
 
 	protected int time = 0;
 	protected int limit;
-	protected boolean countDown;
 
 	/***
-	 * <i>LimitedBukkitRunnable</i>
+	 * <i>TimedBukkitRunnable</i>
 	 * <br>
 	 * A BukkitRunnable that cancels itself after {@link limit} ticks
 	 * 
@@ -17,45 +16,15 @@ public class TimedBukkitRunnable extends BukkitRunnable {
 	 */
 	public TimedBukkitRunnable(int limit) {
 		this.limit = limit;
-		this.countDown = false;
-	}
-
-	/***
-	 * <i>LimitedBukkitRunnable</i>
-	 * <br>
-	 * A BukkitRunnable that cancels itself after {@link limit} ticks
-	 * 
-	 * @param limit - The limit of time for which the runnable will run
-	 */
-	public TimedBukkitRunnable(int limit, boolean countDown) {
-		if(countDown) {
-			this.time = limit;
-			this.limit = 0;
-		}
-		else {
-			this.time = 0;
-			this.limit = limit;
-		}
-		this.countDown = countDown;
 	}
 
 	@Override
 	public void run() {
-		if(countDown) {
-			if(time > limit)
-				time--;
-			else {
-				this.cancel();
-				return;
-			}
-		}
+		if(time < limit)
+			time++;
 		else {
-			if(time < limit)
-				time++;
-			else {
-				this.cancel();
-				return;
-			}
+			this.cancel();
+			return;
 		}
 	}
 

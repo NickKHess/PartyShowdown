@@ -1,4 +1,4 @@
-package com.csg.ware.commands;
+package com.csg.showdown.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

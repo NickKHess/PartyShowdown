@@ -1,16 +1,19 @@
-package com.csg.ware.commands;
+package com.csg.showdown.commands;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import com.csg.ware.Ware;
-import com.csg.ware.entities.director.GameDirector;
-import com.csg.ware.entities.director.GameDirector.Phase;
+import com.csg.showdown.Showdown;
+import com.csg.showdown.entities.director.GameDirector;
+import com.csg.showdown.entities.director.GameDirector.Phase;
 import net.md_5.bungee.api.ChatColor;
 
-public final class CommandWare implements CommandExecutor {
+public final class CommandShowdown implements CommandExecutor, TabCompleter {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -19,7 +22,7 @@ public final class CommandWare implements CommandExecutor {
 			if(args.length == 1) {
 				GameDirector director = GameDirector.instance();
 				if(args[0].equalsIgnoreCase("start")) {
-					if(director.getPhase().equals(Phase.NONE))
+					if(director.getPhase().equals(Phase.PREGAME))
 						if(director.getCurrentGame() == null)
 							director.startRandomRound();
 				}
@@ -42,9 +45,9 @@ public final class CommandWare implements CommandExecutor {
 					else
 						player.sendMessage(ChatColor.RED + "There is no game running!");
 				}
-				else if(args[0].equalsIgnoreCase("tasks")) {
+				else if(args[0].equalsIgnoreCase("test")) {
 					player.sendMessage("Bukkit " + Bukkit.getScheduler().getPendingTasks().toString());
-					player.sendMessage("Plugin " + Ware.getPlugin().getServer().getScheduler().getPendingTasks().toString());
+					player.sendMessage("Plugin " + Showdown.getPlugin().getServer().getScheduler().getPendingTasks().toString());
 				}
 			}
 
@@ -52,5 +55,17 @@ public final class CommandWare implements CommandExecutor {
 		return true;
 	}
 
+	@Override
+	public List<String> onTabComplete(CommandSender arg0, Command arg1, String arg2, String[] arg3) {
+		ArrayList<String> result = new ArrayList<String>();
+
+		result.add("start");
+		result.add("startcountdown");
+		result.add("stopcountdown");
+		result.add("stop");
+		result.add("test");
+
+		return result;
+	}
 
 }

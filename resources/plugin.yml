@@ -1,17 +1,18 @@
-main: com.csg.ware.Ware
-name: Ware
+main: com.csg.showdown.Showdown
+name: PartyShowdown
 version: 1.0
 description: Mini minigames
-author: CoinSlotGaming
-prefix: Ware
+authors: [CoinSlotGaming, DarkHunter_IV]
+prefix: PartyShowdown
 api-version: 1.16
 depend: []
 commands:
-  ware:
-   description: The MineWare core command
-   usage: /<command>
-permissions:
-  ware.*:
-   description: Wildcard permission
-   default: op
-   children:
+  # Showdown Commands
+  showdown:
+   description: The Party Showdown core command
+  # CoinSlotUtils Commands
+  spawn:
+   description: Teleport to spawn!
+  signlocations:
+   description: Create map locations with signs! :)
+   aliases: [signlocation, sl]

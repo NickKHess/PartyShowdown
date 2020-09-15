@@ -1,4 +1,4 @@
-package com.csg.ware.rounds.rounds;
+package com.csg.showdown.rounds.rounds;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,13 +9,13 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import com.csg.utils.tasks.TimedBukkitRunnable;
-import com.csg.ware.Ware;
-import com.csg.ware.entities.GamePlayer;
-import com.csg.ware.entities.director.GameDirector;
-import com.csg.ware.entities.director.GameDirector.Phase;
+import com.csg.showdown.Showdown;
+import com.csg.showdown.entities.GamePlayer;
+import com.csg.showdown.entities.director.GameDirector;
+import com.csg.showdown.entities.director.GameDirector.Phase;
+import com.csg.utils.tasks.CountdownRunnable;
 
-public abstract class Round extends TimedBukkitRunnable {
+public abstract class Round extends CountdownRunnable {
 
 	public static List<Round> availableRounds = new ArrayList<>();
 
@@ -34,7 +34,7 @@ public abstract class Round extends TimedBukkitRunnable {
 	 * The length of the game in seconds
 	 */
 	private int gameLength = 300;
-	private BossBar bossBar = Bukkit.createBossBar(ChatColor.LIGHT_PURPLE + "There are " + ChatColor.AQUA + ((int) (time / 20)) + ChatColor.LIGHT_PURPLE + " seconds left in the game!", BarColor.YELLOW, BarStyle.SOLID);
+	private BossBar bossBar = Bukkit.createBossBar(ChatColor.LIGHT_PURPLE + "There are " + ChatColor.AQUA + ((int) (time / 20)) + ChatColor.LIGHT_PURPLE + " seconds left!", BarColor.BLUE, BarStyle.SOLID);
 
 	private Listener listener = null;
 
@@ -46,7 +46,7 @@ public abstract class Round extends TimedBukkitRunnable {
 	 * @param name - The name of the game
 	 * @param description - The description
 	 * @param gameLength - The length of time, in seconds, which the game takes
-	 * @param listener - The Event Manager to use
+	 * @param listener - The {@link Listener} (event manager) to use
 	 */
 	public Round(String name, String description, int gameLength, Listener listener) {
 		super((gameLength) * 20);
@@ -59,34 +59,37 @@ public abstract class Round extends TimedBukkitRunnable {
 
 	@Override
 	public void run() {
-		// ALWAYS CALL SUPER
-		super.run();
-		
 		GameDirector director = GameDirector.instance();
+		
+		int seconds = time / 20;
+		
 		switch(phase) {
 		case NONE:
 		case PREGAME:
 			// Pregame handled in GameDirector.startRandomRound();
 			break;
 		case INGAME:
-			if(time == 0) {
+			if(seconds == gameLength) {
 				// Register events for the game
-				Bukkit.getServer().getPluginManager().registerEvents(listener, Ware.getPlugin());
+				Bukkit.getServer().getPluginManager().registerEvents(listener, Showdown.getPlugin());
 
-				startGame();
-			}
-			else if(time > 0 || time < limit) {
-				gameLoop();
-
+				// Show all players the boss bar
 				for(GamePlayer gPlayer : director.getPlayers()) {
 					Player player = Bukkit.getPlayer(gPlayer.getUUID());
-					if(bossBar.getPlayers().contains(player))
+					if(!bossBar.getPlayers().contains(player))
 						bossBar.addPlayer(player);
 				}
+				
+				startGame();
 			}
-			else if(time == limit) {
+			else if(seconds > 0 || seconds < start * 20) {
+				bossBar.setTitle(ChatColor.LIGHT_PURPLE + "There are " + ChatColor.AQUA + ((int) (time / 20)) + ChatColor.LIGHT_PURPLE + " seconds left!");
+				gameLoop();
+			}
+			else if(seconds == 0) {
 				// Clean up
 				endGame();
+				// TODO: Doesn't actually WORK
 				bossBar.removeAll();
 
 				time = 0;
@@ -100,7 +103,9 @@ public abstract class Round extends TimedBukkitRunnable {
 		default:
 			break;
 		}
-
+		
+		// ALWAYS CALL SUPER
+		super.run();
 	}
 
 	public abstract void startGame();

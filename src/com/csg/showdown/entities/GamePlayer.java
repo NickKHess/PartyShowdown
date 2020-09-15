@@ -1,4 +1,4 @@
-package com.csg.ware.entities;
+package com.csg.showdown.entities;
 
 import java.util.UUID;
 import org.bukkit.Bukkit;

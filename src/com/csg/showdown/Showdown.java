@@ -1,16 +1,17 @@
-package com.csg.ware;
+package com.csg.showdown;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import com.csg.ware.commands.CommandWare;
-import com.csg.ware.entities.director.GameDirector;
-import com.csg.ware.entities.director.GeneralEventManager;
-import com.csg.ware.rounds.rounds.Round;
-import com.csg.ware.rounds.rounds.RoundSnowballing;
+import com.csg.showdown.commands.CommandShowdown;
+import com.csg.showdown.entities.director.GameDirector;
+import com.csg.showdown.events.GeneralEventManager;
+import com.csg.showdown.rounds.rounds.Round;
+import com.csg.showdown.rounds.rounds.RoundSnowballing;
+import com.csg.utils.commands.CommandSpawn;
 
-public final class Ware extends JavaPlugin {
+public final class Showdown extends JavaPlugin {
 	
-	private static Ware plugin = null;
+	private static Showdown plugin = null;
 	private GameDirector director = null;
 	
 	@Override
@@ -22,7 +23,8 @@ public final class Ware extends JavaPlugin {
 		Bukkit.getServer().getPluginManager().registerEvents(new GeneralEventManager(plugin), plugin);
 
 		// Register commands
-		plugin.getCommand("ware").setExecutor(new CommandWare());
+		plugin.getCommand("showdown").setExecutor(new CommandShowdown());
+		plugin.getCommand("spawn").setExecutor(new CommandSpawn());
 		
 		// Register games
 		Round.availableRounds.add(new RoundSnowballing());
@@ -33,7 +35,7 @@ public final class Ware extends JavaPlugin {
 		// Nothing yet
 	}
 
-	public static Ware getPlugin() {
+	public static Showdown getPlugin() {
 		return plugin;
 	}
 

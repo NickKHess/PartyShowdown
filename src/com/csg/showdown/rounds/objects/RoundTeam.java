@@ -1,9 +1,9 @@
-package com.csg.ware.rounds.objects;
+package com.csg.showdown.rounds.objects;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.ChatColor;
-import com.csg.ware.entities.GamePlayer;
+import com.csg.showdown.entities.GamePlayer;
 
 // Probably won't be used
 @Deprecated

@@ -1,25 +1,22 @@
-package com.csg.ware.entities.director;
+package com.csg.showdown.entities.director;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import com.csg.utils.tasks.TimedBukkitRunnable;
-import com.csg.ware.entities.GamePlayer;
+import com.csg.showdown.entities.GamePlayer;
+import com.csg.utils.tasks.CountdownRunnable;
 
-public final class CountdownRunnable extends TimedBukkitRunnable {
+public class PregameRunnable extends CountdownRunnable {
 	
-	GameDirector director;
+	private GameDirector director;
 	
-	public CountdownRunnable(GameDirector director, int start) {
-		super(start, true);
-		this.director = director;
+	public PregameRunnable(int start) {
+		super(start);
+		this.director = GameDirector.instance();
 	}
 	
 	@Override
 	public void run() {
-		// ALWAYS CALL SUPER
-		super.run();
-		
 		ChatColor color = ChatColor.AQUA;
 		switch(time) {
 		case 5*20:
@@ -43,8 +40,17 @@ public final class CountdownRunnable extends TimedBukkitRunnable {
 				player.sendMessage(ChatColor.YELLOW + "There are " + color + time / 20 + ChatColor.YELLOW + " seconds until the game starts!");
 			}
 				
-		if(time == limit)
+		if(time == 0) {
 			director.startRandomRound();
+			this.cancel();
+		}
+		
+		// ALWAYS CALL SUPER
+		super.run();
+	}
+	
+	public GameDirector getDirector() {
+		return director;
 	}
 
 }
