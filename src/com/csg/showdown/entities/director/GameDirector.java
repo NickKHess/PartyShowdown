@@ -10,7 +10,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import com.csg.showdown.Showdown;
 import com.csg.showdown.entities.GamePlayer;
-import com.csg.showdown.rounds.rounds.Round;
+import com.csg.showdown.rounds.Round;
 import com.csg.utils.player.PlayerCollisionToggler;
 
 public final class GameDirector {

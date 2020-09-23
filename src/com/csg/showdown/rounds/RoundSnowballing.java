@@ -1,4 +1,4 @@
-package com.csg.showdown.rounds.rounds;
+package com.csg.showdown.rounds;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -50,7 +50,9 @@ public final class RoundSnowballing extends Round {
 
 	@Override
 	public void endGame() {
-		// TODO: Clear inventories
+		for(GamePlayer gPlayer : GameDirector.instance().getPlayers()) {
+			gPlayer.toPlayer().getInventory().clear();
+		}
 	}
 
 	@Override

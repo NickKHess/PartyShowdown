@@ -1,4 +1,4 @@
-package com.csg.showdown.rounds.rounds;
+package com.csg.showdown.rounds;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,7 +6,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
 import com.csg.showdown.entities.GamePlayer;
-import com.csg.showdown.rounds.objects.RoundTeam;
+import com.csg.showdown.rounds.entities.RoundTeam;
 
 // Probably won't be used
 @Deprecated

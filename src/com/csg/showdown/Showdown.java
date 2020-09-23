@@ -5,8 +5,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.csg.showdown.commands.CommandShowdown;
 import com.csg.showdown.entities.director.GameDirector;
 import com.csg.showdown.events.GeneralEventManager;
-import com.csg.showdown.rounds.rounds.Round;
-import com.csg.showdown.rounds.rounds.RoundSnowballing;
+import com.csg.showdown.rounds.Round;
+import com.csg.showdown.rounds.RoundSnowballing;
+import com.csg.utils.commands.CommandSignLocations;
 import com.csg.utils.commands.CommandSpawn;
 
 public final class Showdown extends JavaPlugin {
@@ -25,6 +26,7 @@ public final class Showdown extends JavaPlugin {
 		// Register commands
 		plugin.getCommand("showdown").setExecutor(new CommandShowdown());
 		plugin.getCommand("spawn").setExecutor(new CommandSpawn());
+		plugin.getCommand("signlocation").setExecutor(new CommandSignLocations());
 		
 		// Register games
 		Round.availableRounds.add(new RoundSnowballing());

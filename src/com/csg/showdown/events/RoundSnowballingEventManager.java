@@ -7,7 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import com.csg.showdown.Showdown;
-import com.csg.showdown.rounds.rounds.RoundSnowballing;
+import com.csg.showdown.rounds.RoundSnowballing;
 
 public class RoundSnowballingEventManager implements Listener {
 

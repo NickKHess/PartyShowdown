@@ -1,35 +1,20 @@
 package com.csg.utils.commands;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.Scanner;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-
 import com.csg.showdown.Showdown;
 import com.csg.utils.position.SignLocationManager;
 
+@Deprecated
 public class CommandSignLocations implements CommandExecutor {
 	
 	private static ArrayList<HashMap<String, ArrayList<Location>>> signGroupList = new ArrayList<HashMap<String, ArrayList<Location>>>();

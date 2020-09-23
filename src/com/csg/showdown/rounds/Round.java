@@ -1,4 +1,4 @@
-package com.csg.showdown.rounds.rounds;
+package com.csg.showdown.rounds;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,8 +89,8 @@ public abstract class Round extends CountdownRunnable {
 			else if(seconds == 0) {
 				// Clean up
 				endGame();
-				// TODO: Doesn't actually WORK
 				bossBar.removeAll();
+				bossBar = null;
 
 				time = 0;
 				phase = Phase.POSTGAME;
@@ -151,6 +151,13 @@ public abstract class Round extends CountdownRunnable {
 
 	public void setListener(Listener listener) {
 		this.listener = listener;
+	}
+	
+	public static Round getRoundByName(String name) {
+		for(Round round : availableRounds)
+			if(round.getName().equalsIgnoreCase(name))
+				return round;
+		return null;
 	}
 
 }

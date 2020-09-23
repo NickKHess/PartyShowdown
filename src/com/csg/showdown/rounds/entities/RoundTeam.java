@@ -1,4 +1,4 @@
-package com.csg.showdown.rounds.objects;
+package com.csg.showdown.rounds.entities;
 
 import java.util.ArrayList;
 import java.util.List;
